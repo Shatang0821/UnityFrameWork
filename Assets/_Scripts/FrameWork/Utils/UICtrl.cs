@@ -4,46 +4,50 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class UICtrl : MonoBehaviour
+namespace FrameWork.Utils
 {
-    private Dictionary<string, GameObject> _view = new Dictionary<string, GameObject>();
-
-    protected Dictionary<string, GameObject> View => _view;
-
-    public virtual void Awake()
+    public class UICtrl : MonoBehaviour
     {
-        LoadAllObjectsToView(this.gameObject, "");
-    }
+        private Dictionary<string, GameObject> _view = new Dictionary<string, GameObject>();
 
-    /// <summary>
-    /// UIの子オブジェクトをすべてを取得する
-    /// </summary>
-    /// <param name="root"></param>
-    /// <param name="path"></param>
-    private void LoadAllObjectsToView(GameObject root, string path)
-    {
-        
-        foreach (Transform transform in root.transform)
+        protected Dictionary<string, GameObject> View => _view;
+
+        public virtual void Awake()
         {
-            var gameObject = transform.gameObject;
-            if(this._view.ContainsKey(path + gameObject.name))
+            LoadAllObjectsToView(this.gameObject, "");
+        }
+
+        /// <summary>
+        /// UIの子オブジェクトをすべてを取得する
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="path"></param>
+        private void LoadAllObjectsToView(GameObject root, string path)
+        {
+        
+            foreach (Transform transform in root.transform)
             {
-                continue;
+                var gameObject = transform.gameObject;
+                if(this._view.ContainsKey(path + gameObject.name))
+                {
+                    continue;
+                }
+                this._view.Add(path + gameObject.name,gameObject);
+                this.LoadAllObjectsToView(gameObject,path + gameObject.name + "/");
             }
-            this._view.Add(path + gameObject.name,gameObject);
-            this.LoadAllObjectsToView(gameObject,path + gameObject.name + "/");
         }
-    }
 
-    protected void AddButtonListener(string viewName, UnityAction onClick)
-    {
-        Button bt = this._view[viewName].GetComponent<Button>();
-        if (bt == null)
+        protected void AddButtonListener(string viewName, UnityAction onClick)
         {
-            Debug.LogWarning(this.name + "Try add button listener but failed");
-            return;
-        }
+            Button bt = this._view[viewName].GetComponent<Button>();
+            if (bt == null)
+            {
+                Debug.LogWarning(this.name + "Try add button listener but failed");
+                return;
+            }
         
-        bt.onClick.AddListener(onClick);
+            bt.onClick.AddListener(onClick);
+        }
     }
 }
+

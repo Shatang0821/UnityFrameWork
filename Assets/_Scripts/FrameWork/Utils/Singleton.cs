@@ -1,6 +1,8 @@
 using UnityEngine;
 
-// ジェネリックシングルトンクラス。任意の型Tの唯一のインスタンスを保持します。
+namespace FrameWork.Utils
+{
+    // ジェネリックシングルトンクラス。任意の型Tの唯一のインスタンスを保持します。
 public class Singleton<T> where T : new()
 {
     // 唯一のインスタンスを保持する静的変数。
@@ -77,4 +79,5 @@ public class UnitySingleton<T> : MonoBehaviour where T : Component
             GameObject.Destroy(this.gameObject);  // 重複するGameObjectを破棄
         }
     }
+}
 }

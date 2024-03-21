@@ -1,5 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using FrameWork.Factories;
+using FrameWork.Manager;
+using FrameWork.Utils;
 using UnityEngine;
 
 public class GameApp : UnitySingleton<GameApp>
@@ -32,19 +33,8 @@ public class GameApp : UnitySingleton<GameApp>
     /// </summary>
     private void InitMgr()
     {
-        //GeneratorPoolMgr();
-        
+        //ManagerFactory.Instance.CreateManager<PoolManager>(this.transform);
     }
 
-    /// <summary>
-    /// PoolManagerを生成
-    /// </summary>
-    private void GeneratorPoolMgr()
-    {
-        GameObject poolMgr = new GameObject();
-        poolMgr.transform.parent = this.transform;
-        poolMgr.name = "PoolManager";
-        var component = poolMgr.AddComponent<PoolManager>();
-        component.Init();
-    }
+
 }

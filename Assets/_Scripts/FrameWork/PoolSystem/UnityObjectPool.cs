@@ -1,9 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
+using FrameWork.Utils;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class ObjectPool<T> where T : IPoolable, new()
+namespace FrameWork.PoolSystem
+{
+    public class ObjectPool<T> where T : IPoolable, new()
 {
     /// <summary>
     /// 使用可能
@@ -249,4 +250,5 @@ public class UnityObjectPool
     #endregion
 
     #endregion
+}
 }

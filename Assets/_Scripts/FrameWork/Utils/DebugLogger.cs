@@ -1,9 +1,12 @@
-﻿public static class DebugLogger
+﻿namespace FrameWork.Utils
 {
-    public static void Log(object o)
+    public static class DebugLogger
     {
+        public static void Log(object o)
+        {
 #if UNITY_EDITOR
-        UnityEngine.Debug.Log(o);
+            UnityEngine.Debug.Log(o);
 #endif
-    }
+        }
+    } 
 }

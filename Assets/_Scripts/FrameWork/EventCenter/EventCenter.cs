@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Framework.EventCenter
+namespace FrameWork.EventCenter
 {
     /// <summary>
     /// イベント処理中心

@@ -1,6 +1,6 @@
 ﻿using Unity.IO.LowLevel.Unsafe;
 
-namespace Framework.EventCenter
+namespace FrameWork.EventCenter
 {
     public static class EventKeyManager
     {
