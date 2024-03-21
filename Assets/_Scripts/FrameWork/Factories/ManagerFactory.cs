@@ -1,4 +1,4 @@
-﻿using FrameWork.Interface;
+﻿using FrameWork.Manager;
 using FrameWork.Utils;
 using UnityEngine;
 

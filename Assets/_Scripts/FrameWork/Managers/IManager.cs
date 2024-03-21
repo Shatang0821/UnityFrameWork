@@ -1,4 +1,4 @@
-﻿namespace FrameWork.Interface
+﻿namespace FrameWork.Manager
 {
     public interface IManager
     {
