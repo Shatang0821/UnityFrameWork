@@ -4,30 +4,38 @@ namespace FrameWork.FSM
 {
     public abstract class StateMachine
     {
-        protected IState currentState { get; private set; }
-        
+        protected IState CurrentState { get; private set; }
+
+        /// <summary>
+        /// 状態の初期化
+        /// </summary>
+        /// <param name="startState"></param>
+        public void Initialize(IState startState)
+        {
+            ChangeState(startState);
+        }
         public void ChangeState(IState newState)
         {
-            currentState?.Exit();
+            CurrentState?.Exit();
             
-            currentState = newState;
+            CurrentState = newState;
 
-            currentState.Enter();
+            CurrentState.Enter();
         }
 
         public void HandleInput()
         {
-            currentState?.HandleInput();
+            CurrentState?.HandleInput();
         }
 
         public void LogicUpdate()
         {
-            currentState?.LogicUpdate();
+            CurrentState?.LogicUpdate();
         }
 
         public void PhysicsUpdate()
         {
-            currentState?.PhysicsUpdate();
+            CurrentState?.PhysicsUpdate();
         }
     }
 }
