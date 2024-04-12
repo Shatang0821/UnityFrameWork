@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace FrameWork.Manager
 {
-    public class PoolManager : MonoBehaviour, IManager
+    public class PoolManager : MonoBehaviour, IInitable
     {
     //例
     //[SerializeField] ObjectPool[] enemyPools;

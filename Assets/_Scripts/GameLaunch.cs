@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GameLaunch : UnitySingleton<GameLaunch>
 {
-    public override void Awake()
+    protected override void Awake()
     {
         base.Awake();
         this.InitFramework();

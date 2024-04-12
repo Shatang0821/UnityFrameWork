@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FrameWork.Utils;
 using UnityEngine;
 
 namespace FrameWork.EventCenter
@@ -11,117 +12,163 @@ namespace FrameWork.EventCenter
     public class EventCenter
     {
         //デフォルトイベント
-        private static Dictionary<EventKey, Action> eventNoParamDictionary = new Dictionary<EventKey, Action>();
-
-        //引数持ちイベント
-        private static Dictionary<EventKey, Action<object>> eventWithParamDictionary =
-            new Dictionary<EventKey, Action<object>>();
-
-        // 戻り値のあるイベント
-        private static Dictionary<EventKey, Func<object, object>> eventWithReturnDictionary =
-            new Dictionary<EventKey, Func<object, object>>();
+        private static Dictionary<EventKey, Delegate> m_EventDictionary = new Dictionary<EventKey, Delegate>();
+#region Add
 
         /// <summary>
-        /// イベントをサブスクライブ
+        /// イベント登録チェック
+        /// </summary>
+        /// <param name="eventKey"></param>
+        /// <param name="callBack"></param>
+        /// <exception cref="Exception"></exception>
+        private static void OnListenerAdding(EventKey eventKey, Delegate callBack)
+        {
+            //イベント登録処理
+            if (!m_EventDictionary.ContainsKey(eventKey))
+            {
+                m_EventDictionary.Add(eventKey, null);
+            }
+
+            Delegate d = m_EventDictionary[eventKey];
+            if (d != null && d.GetType() != callBack.GetType())
+            {
+                throw new Exception(string.Format("イベント{0}に異なるデリケートを追加しようとする,現在のイベントに対応するデリケートは{1},登録したいデリケートは{2}",
+                    eventKey, d.GetType(), callBack.GetType()));
+            }
+        }
+
+        /// <summary>
+        /// 引数なしデリケートを登録
         /// </summary>
         /// <param name="eventKey">イベントキー</param>
-        /// <param name="listener">イベント</param>
-        public static void Subscribe(EventKey eventKey, Action listener)
+        /// <param name="callBack">デリケート</param>
+        public static void AddListener(EventKey eventKey, CallBack callBack)
         {
-            if (eventNoParamDictionary.TryGetValue(eventKey, out var thisEvent))
+            OnListenerAdding(eventKey, callBack);
+
+            m_EventDictionary[eventKey] = Delegate.Combine(m_EventDictionary[eventKey], callBack);
+        }
+
+        /// <summary>
+        /// 引数一つ持ち
+        /// </summary>
+        /// <param name="eventKey">イベントキー</param>
+        /// <param name="callBack">デリケート</param>
+        /// <typeparam name="T">引数</typeparam>
+        public static void AddListener<T>(EventKey eventKey, CallBack<T> callBack)
+        {
+            OnListenerAdding(eventKey, callBack);
+
+            m_EventDictionary[eventKey] = Delegate.Combine(m_EventDictionary[eventKey], callBack);
+        }
+        
+        
+        /// <summary>
+        /// 引数二つ持ち
+        /// </summary>
+        /// <param name="eventKey">イベントキー</param>
+        /// <param name="callBack">デリケート</param>
+        /// <typeparam name="T1">引数</typeparam>
+        /// <typeparam name="T2">引数</typeparam>
+        public static void AddListener<T1,T2>(EventKey eventKey, CallBack<T1,T2> callBack)
+        {
+            OnListenerAdding(eventKey, callBack);
+
+            m_EventDictionary[eventKey] = Delegate.Combine(m_EventDictionary[eventKey], callBack);
+        }
+
+#endregion
+
+#region Remove
+        /// <summary>
+        /// イベントの解除チェック
+        /// </summary>
+        /// <param name="eventKey">イベントキー</param>
+        /// <param name="callBack">イベント</param>
+        /// <exception cref="Exception"></exception>
+        private static void OnListenerRemoving(EventKey eventKey, Delegate callBack)
+        {
+            //イベント登録処理
+            if (m_EventDictionary.ContainsKey(eventKey))
             {
-                // 既に同じリスナーが登録されている場合は追加しない
-                if (thisEvent != null && !thisEvent.GetInvocationList().Contains(listener))
+                Delegate d = m_EventDictionary[eventKey];
+                if (d == null)
                 {
-                    eventNoParamDictionary[eventKey] += listener;
+                    throw new Exception(string.Format("デリケートを解除失敗,イベント{0}には対応するデリケート{1}は存在していない", eventKey,
+                        callBack.GetType()));
+                }
+                else if (d.GetType() != callBack.GetType())
+                {
+                    throw new Exception(string.Format(
+                        "デリケートを解除失敗,イベント{0}に違う型のデリケートを解除しようとする,現在のイベントに対応するデリケートは{1},解除したいデリケートは{2}", eventKey,
+                        d.GetType(), callBack.GetType()));
                 }
             }
             else
             {
-                eventNoParamDictionary.Add(eventKey, listener);
+                throw new Exception(string.Format("デリケートを解除失敗,イベントキー{0}は存在していない", eventKey));
             }
         }
 
         /// <summary>
-        /// 引数持ちイベントをサブスクライブ
+        /// イベントの解除処理
         /// </summary>
         /// <param name="eventKey">イベントキー</param>
-        /// <param name="listener">イベント</param>
-        public static void Subscribe(EventKey eventKey, Action<object> listener)
+        private static void OnListenerRemoved(EventKey eventKey)
         {
-            if (eventWithParamDictionary.TryGetValue(eventKey, out var thisEvent))
+            if (m_EventDictionary[eventKey] == null)
             {
-                thisEvent += listener;
-                eventWithParamDictionary[eventKey] = thisEvent;
-            }
-            else
-            {
-                thisEvent += listener;
-                eventWithParamDictionary.Add(eventKey, thisEvent);
+                m_EventDictionary.Remove(eventKey);
             }
         }
 
         /// <summary>
-        /// 戻り値のあるイベントをサブスクライブ
-        /// 一つのリスナーだけ有効
+        /// デリケートを解除
         /// </summary>
         /// <param name="eventKey">イベントキー</param>
-        /// <param name="listener">イベント</param>
-        public static void Subscribe(EventKey eventKey, Func<object, object> listener)
+        /// <param name="callBack">デリケート</param>
+        public static void RemoveListener(EventKey eventKey, CallBack callBack)
         {
-            if (!eventWithReturnDictionary.ContainsKey(eventKey))
-            {
-                eventWithReturnDictionary[eventKey] = listener;
-            }
-            else
-            {
-                Debug.LogWarning(eventKey.ToString() + "が複数のイベントをサブスクライブしている");
-                // 既存のリスナーと新しいリスナーを連結する処理（必要に応じて実装）
-                // 例: 最後に追加されたリスナーのみが有効になる
-                eventWithReturnDictionary[eventKey] = listener;
-            }
+            OnListenerRemoving(eventKey, callBack);
+
+            m_EventDictionary[eventKey] = (CallBack)m_EventDictionary[eventKey] - callBack;
+
+            OnListenerRemoved(eventKey);
         }
 
         /// <summary>
-        /// サブスクライブを解除
+        /// 引数１つ持ち
         /// </summary>
         /// <param name="eventKey">イベントキー</param>
-        /// <param name="listener">イベント</param>
-        public static void Unsubscribe(EventKey eventKey, Action listener)
+        /// <param name="callBack">デリケート</param>
+        /// <typeparam name="T">引数</typeparam>
+        public static void RemoveListener<T>(EventKey eventKey, CallBack<T> callBack)
         {
-            if (eventNoParamDictionary.TryGetValue(eventKey, out var thisEvent))
-            {
-                thisEvent -= listener;
-                eventNoParamDictionary[eventKey] = thisEvent;
-            }
-        }
+            OnListenerRemoving(eventKey, callBack);
 
-        /// <summary>
-        /// 引数持ちサブスクライブを解除
-        /// </summary>
-        /// <param name="eventKey">イベントキー</param>
-        /// <param name="listener">イベント</param>
-        public static void Unsubscribe(EventKey eventKey, Action<object> listener)
-        {
-            if (eventWithParamDictionary.TryGetValue(eventKey, out var thisEvent))
-            {
-                thisEvent -= listener;
-                eventWithParamDictionary[eventKey] = thisEvent;
-            }
-        }
+            m_EventDictionary[eventKey] = (CallBack<T>)m_EventDictionary[eventKey] - callBack;
 
+            OnListenerRemoved(eventKey);
+        }
+        
         /// <summary>
-        /// 戻り値のあるイベントを解除
+        /// 引数２つ持ち
         /// </summary>
         /// <param name="eventKey">イベントキー</param>
-        /// <param name="listener">イベント</param>
-        public static void Unsubscribe(EventKey eventKey, Func<object, object> listener)
+        /// <param name="callBack">デリケート</param>
+        /// <typeparam name="T1">引数</typeparam>
+        /// <typeparam name="T2">引数</typeparam>
+        public static void RemoveListener<T1,T2>(EventKey eventKey, CallBack<T1,T2> callBack)
         {
-            if (eventWithReturnDictionary.ContainsKey(eventKey))
-            {
-                eventWithReturnDictionary.Remove(eventKey);
-            }
+            OnListenerRemoving(eventKey, callBack);
+
+            m_EventDictionary[eventKey] = (CallBack<T1,T2>)m_EventDictionary[eventKey] - callBack;
+
+            OnListenerRemoved(eventKey);
         }
+#endregion
+
+#region Trigger
 
         /// <summary>
         /// イベントを実行する
@@ -129,35 +176,61 @@ namespace FrameWork.EventCenter
         /// <param name="eventKey">イベントキー</param>
         public static void TriggerEvent(EventKey eventKey)
         {
-            if (eventNoParamDictionary.TryGetValue(eventKey, out var thisEvent))
+            if (m_EventDictionary.TryGetValue(eventKey, out Delegate d))
             {
-                thisEvent?.Invoke();
+                if (d is CallBack callBack)
+                {
+                    callBack();
+                }
+                else
+                {
+                    throw new Exception(string.Format("イベントを実行失敗:イベント{0}は違う型のデリケートを持っている", eventKey));
+                }
             }
         }
 
         /// <summary>
-        /// 引数持ちイベントを実行
+        /// 引数一つのイベントを実行
         /// </summary>
         /// <param name="eventKey">イベントキー</param>
-        /// <param name="eventParam">引数</param>
-        public static void TriggerEvent(EventKey eventKey, object eventParam)
+        /// <param name="arg">引数</param>
+        /// <typeparam name="T">型</typeparam>
+        /// <exception cref="Exception"></exception>
+        public static void TriggerEvent<T>(EventKey eventKey, T arg)
         {
-            if (eventWithParamDictionary.TryGetValue(eventKey, out var thisEvent))
+            if (m_EventDictionary.TryGetValue(eventKey, out Delegate d))
             {
-                thisEvent?.Invoke(eventParam);
+                if (d is CallBack<T> callBack)
+                {
+                    callBack(arg);
+                }
+                else
+                {
+                    throw new Exception(string.Format("イベントを実行失敗:イベント{0}は違う型のデリケートを持っている", eventKey));
+                }
             }
         }
-
-        // 戻り値のあるイベントをトリガー
-        public static object TriggerEventHasValue(EventKey eventKey, object eventParam)
+        
+        /// <summary>
+        /// 引数二つのトリガー
+        /// </summary>
+        /// <param name="eventKey">イベントキー</param>
+        /// <typeparam name="T1">引数型1</typeparam>
+        /// <typeparam name="T2">引数型2</typeparam>
+        public static void TriggerEvent<T1,T2>(EventKey eventKey, T1 arg1,T2 arg2)
         {
-            if (eventWithReturnDictionary.TryGetValue(eventKey, out var thisEvent))
+            if (m_EventDictionary.TryGetValue(eventKey, out Delegate d))
             {
-                return thisEvent?.Invoke(eventParam);
+                if (d is CallBack<T1,T2> callBack)
+                {
+                    callBack(arg1,arg2);
+                }
+                else
+                {
+                    throw new Exception(string.Format("イベントを実行失敗:イベント{0}は違う型のデリケートを持っている", eventKey));
+                }
             }
-            return null;
         }
+#endregion
     }
 }
-
-

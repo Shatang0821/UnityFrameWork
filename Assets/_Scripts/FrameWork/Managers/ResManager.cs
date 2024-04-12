@@ -1,21 +1,22 @@
 using FrameWork.Utils;
+using UnityEngine;
 
 namespace FrameWork.Manager
 {
     public class ResManager : UnitySingleton<ResManager>
     {
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
         }
 
-        public T GetAssetCache<T>(string name) where T : UnityEngine.Object
+        public T GetAssetCache<T>(string path) where T : UnityEngine.Object
         {
-//#if UNITY_EDITOR
-            string path = "Assets/AssetsPackage/" + name;
-            UnityEngine.Object target = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(path);
-            return target as T;
-//#endif
+            // string path = "Assets/AssetsPackage/" + name;
+            // UnityEngine.Object target = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(path);
+            // return target as T;
+            UnityEngine.Object target = Resources.Load<T>(path);
+            return (T)target;
         }
     }
 }
