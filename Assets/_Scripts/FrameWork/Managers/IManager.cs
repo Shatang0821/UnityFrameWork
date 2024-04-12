@@ -1,8 +1,7 @@
 ﻿namespace FrameWork.Manager
 {
-    public interface IManager
+    public interface IInitable
     {
         void Init();
-        void LogicUpdate();
     }
 }

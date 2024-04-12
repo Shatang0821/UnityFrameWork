@@ -1,42 +1,40 @@
-﻿namespace FrameWork.EventCenter
+﻿using Unity.IO.LowLevel.Unsafe;
+
+namespace FrameWork.EventCenter
 {
-    public class EventKey
+    public enum EventKey
     {
-        private readonly string id;
-        private readonly int hash;
-
-        /// <summary>
-        /// 文字列をハッシュ
-        /// </summary>
-        /// <param name="id"></param>
-        public EventKey(string id)
-        {
-            this.id = id;
-            this.hash = id.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EventKey key && id == key.id;
-        }
-
-        /// <summary>
-        /// コンストラクターで計算した値を返す
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            return hash;
-        }
-
-        public static bool operator ==(EventKey key1, EventKey key2)
-        {
-            return key1.Equals(key2);
-        }
-
-        public static bool operator !=(EventKey key1, EventKey key2)
-        {
-            return !(key1 == key2);
-        }
+        OnChangeUIPrefab,       //UIプレハブの切り替え
+        OnStartSelect,          //スタートボタン
+        OnSceneStateChange,     //シーンの切り替え
+        OnGameStateChange,      //ゲーム状態切り替え
+        
+        OnGameStatePrepare,
+        OnGameStateSelectCards,
+        OnGameStateCheckCards,
+        OnGameStateEnd,
+        OnStartOnLine,
+        OnLeaveOnline,
+        
+        ShowCardsInBoard,       //対戦用のかードを配る
+        ShowStartButton,        
+        
+        SetShuffledCard,
+        
+        SwitchTurn,             //ターンの切り替え
+        OnChangePoint,          //ポイントUIの更新
     }
+    
+    
+
+    // public static class StateKey
+    // {
+    //     public static readonly EventKey OnSceneStateChange = new("OnSceneStateChange");
+    //     public static readonly EventKey OnGameStateChange = new("OnGameStateChange");
+    //
+    //     public static readonly EventKey OnGameStatePrepare = new("OnGameStatePrepare");
+    //     public static readonly EventKey OnGameStateSelectCards = new("OnGameStateSelectCards");
+    //     public static readonly EventKey OnGameStateCheckCards = new("OnGameStateCheckCards");
+    //     public static readonly EventKey OnGameStateEnd = new("OnGameStateEnd");
+    // }
 }
