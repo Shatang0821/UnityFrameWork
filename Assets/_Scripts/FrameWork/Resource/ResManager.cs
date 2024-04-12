@@ -1,7 +1,7 @@
 using FrameWork.Utils;
 using UnityEngine;
 
-namespace FrameWork.Manager
+namespace FrameWork.Resource
 {
     public class ResManager : UnitySingleton<ResManager>
     {

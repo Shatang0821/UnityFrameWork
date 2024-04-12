@@ -1,4 +1,4 @@
-﻿using FrameWork.Manager;
+﻿using FrameWork.Interface;
 using FrameWork.Utils;
 using UnityEngine;
 
@@ -21,10 +21,11 @@ namespace FrameWork.Factories
             }
 
             var component = gameObject.AddComponent<T>();
-            if (component is IInitable initable)
+            if (component is IInitializable initable)
             {
                 initable.Init();
             }
+
             return component;
         }
     }

@@ -1,5 +1,3 @@
-using FrameWork.Factories;
-using FrameWork.Manager;
 using FrameWork.Utils;
 using UnityEngine;
 

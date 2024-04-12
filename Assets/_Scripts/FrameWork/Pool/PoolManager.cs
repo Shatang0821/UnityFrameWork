@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using FrameWork.PoolSystem;
+using FrameWork.Interface;
 using FrameWork.Utils;
 using UnityEngine;
 
-namespace FrameWork.Manager
+namespace FrameWork.Pool
 {
-    public class PoolManager : MonoBehaviour, IInitable
+    public class PoolManager : MonoBehaviour, IInitializable
     {
     //例
     //[SerializeField] ObjectPool[] enemyPools;
@@ -17,7 +17,6 @@ namespace FrameWork.Manager
     {
         DebugLogger.Log("Init PoolManager");
         dictionary = new Dictionary<GameObject, UnityObjectPool>();
-    
         //例
         //Initialize(enemyPools);
     }

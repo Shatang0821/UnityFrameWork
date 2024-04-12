@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using FrameWork.Utils;
 using UnityEngine;
 
-namespace FrameWork.PoolSystem
+namespace FrameWork.Pool
 {
     public class ObjectPool<T> where T : IPoolable, new()
     {
@@ -115,7 +115,7 @@ namespace FrameWork.PoolSystem
         private Queue<GameObject> _availableQueue;
 
         // ゲームオブジェクトがインスタンス化されるときの親オブジェクト
-        private Transform parent;
+        private Transform _parent;
 
         #region 初期化関連
 
@@ -128,7 +128,7 @@ namespace FrameWork.PoolSystem
             //キューの初期化
             _availableQueue = new Queue<GameObject>();
             //親オブジェクトを生成してそれの下にオブジェクトを生成する
-            this.parent = parent;
+            this._parent = parent;
 
             //サイズ分のオブジェクトをキューに入れる
             for (var i = 0; i < size; i++)
@@ -143,7 +143,7 @@ namespace FrameWork.PoolSystem
         private GameObject Copy()
         {
             //作成したオブジェクトをparentの子オブジェクトにする
-            var copy = GameObject.Instantiate(prefab, parent);
+            var copy = GameObject.Instantiate(prefab, _parent);
             //初期非アクティブ化にする
             copy.SetActive(false);
             //作成したオブジェクトを返す

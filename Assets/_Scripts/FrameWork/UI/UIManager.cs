@@ -3,8 +3,9 @@ using UnityEngine;
 using System;
 using FrameWork.Utils;
 using FrameWork.EventCenter;
+using FrameWork.Resource;
 
-namespace FrameWork.Manager
+namespace FrameWork.UI
 {
     /// <summary>
     /// UIControllerの初期化とオブジェクト登録
