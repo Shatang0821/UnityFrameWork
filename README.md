@@ -1,51 +1,51 @@
-# 代码命名规范
+# コード命名規則
 
-本项目遵循以下代码命名规范：
+このプロジェクトは以下のコード命名規則に従います。
 
-## 类名和结构体名
+## クラス名と構造体名
 
-- 使用 **PascalCase**。
-- 例：`PlayerController`, `GameManager`, `EnemyAI`。
+- **PascalCase**を使用します。
+- 例：`PlayerController`、`GameManager`、`EnemyAI`。
 
-## 方法名
+## メソッド名
 
-- 使用 **PascalCase**。
-- 方法应清晰表明其功能。
-- 例：`CalculateDamage`, `MovePlayer`, `ShowMenu`。
+- **PascalCase**を使用します。
+- メソッドはその機能を明確に示すべきです。
+- 例：`CalculateDamage`、`MovePlayer`、`ShowMenu`。
 
-## 变量名
+## 変数名
 
-- 私有变量使用 **camelCase**，前加下划线 `_`。
-- 公共变量使用 **PascalCase**。
-- 例：私有 `_health`, 公共 `PlayerSpeed`。
+- プライベート変数は**camelCase**を使用し、前にアンダースコア`_`を付けます。
+- パブリック変数は**PascalCase**を使用します。
+- 例：プライベート`_health`、パブリック`PlayerSpeed`。
 
-## 局部变量和参数
+## ローカル変数とパラメータ
 
-- 使用 **camelCase**。
-- 例：`initialHealth`, `moveSpeed`。
+- **camelCase**を使用します。
+- 例：`initialHealth`、`moveSpeed`。
 
-## 常量和静态只读字段
+## 定数と静的読み取り専用フィールド
 
-- 使用 **PascalCase** 或 **ALL_CAPS**。
-- 例：`const int MaxHealth = 100;`, `static readonly int DefaultSpeed = 5;`。
+- **PascalCase**または**ALL_CAPS**を使用します。
+- 例：`const int MaxHealth = 100;`、`static readonly int DefaultSpeed = 5;`。
 
-## 属性
+## プロパティ
 
-- 使用 **PascalCase**。
-- 例：`public int Health { get; private set; }`, `public bool IsDead { get; }`。
+- **PascalCase**を使用します。
+- 例：`public int Health { get; private set; }`、`public bool IsDead { get; }`。
 
-## 事件
+## イベント
 
-- 使用 **PascalCase**。
-- 事件命名通常是动词或动词短语。
-- 例：`public event Action OnDeath;`, `public event Action<int> OnScoreChanged;`。
+- **PascalCase**を使用します。
+- イベント名は通常、動詞または動詞句です。
+- 例：`public event Action OnDeath;`、`public event Action<int> OnScoreChanged;`。
 
-## 接口
+## インターフェース
 
-- 名称以大写字母 **I** 开头，后跟 **PascalCase**。
-- 例：`interface IMovable`, `interface IHealthSystem`。
+- 大文字の **I** で始まり、その後に**PascalCase**が続きます。
+- 例：`interface IMovable`、`interface IHealthSystem`。
 
-## 枚举
+## 列挙型
 
-- 类型和成员使用 **PascalCase**。
+- 型とメンバーには**PascalCase**を使用します。
 - 例：`enum GameState { Running, Paused, Ended }`。
